@@ -703,16 +703,16 @@ DECLARE @Counter int = 1;
 
 WHILE (@Counter > 0)
 BEGIN
-  DECLARE @Proc int = NULL;
-  DECLARE @Patient int;
+  DECLARE @Procedure int = NULL;
+  DECLARE @Pat int;
 
-  SELECT @Proc = ProcedureID, @Patient = PatientID
+  SELECT @Procedure = ProcedureID, @Pat = PatientID
   FROM ToBeScheduled
   GROUP BY ProcedureID, PatientID
   HAVING COUNT(ProcedureID) > 1 AND COUNT(PatientID) > 1
 
 -- REQ: DELETEs a set of rows with a WHERE clause. The values used in the WHERE clause are variables.
-  DELETE TOP 1
+  DELETE TOP (1)
   FROM ToBeScheduled
   WHERE ProcedureID = @Proc AND PatientID = @Patient
 
