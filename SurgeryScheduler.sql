@@ -1,5 +1,5 @@
 -- This database will simulate a surgery schedule "Bluesgrass Ortho and Spine
--- Surgical Associates" for a one week period in which up to 181 surgeries are
+-- Surgical Associates" for a one week period in which up to 161 surgeries are
 -- to be scheduled. NOTE: Requirements will have "REQ" to start comment.
 
 CREATE DATABASE SurgerySchedule;
@@ -70,9 +70,9 @@ CREATE TABLE ToBeScheduled (
 
 GO
 
--- INSERT scripts to populate data (through line 491)
+-- INSERT scripts to populate data (through line 465)
 
---Insert patient data from mockaroo (through line 227)
+--Insert patient data from mockaroo (through line 220)
 INSERT INTO Patients
 VALUES
 (1, 'Devin Lissimore', 46, '674-585-3296', 'M'),
@@ -217,14 +217,7 @@ VALUES
 (140, 'Sigvard Passler', 79, '149-145-4256', 'M'),
 (141, 'Bartolemo Dacey', 75, '688-762-3651', 'M'),
 (142, 'Whitman Barstowk', 75, '899-225-3967', 'M'),
-(143, 'Geno Pretorius', 85, '287-144-6308', 'M'),
-(144, 'Ozzy Izzat', 89, '136-209-1464', 'M'),
-(145, 'Giacopo Cloute', 66, '425-142-7114', 'M'),
-(146, 'Blakelee Gendrich', 74, '817-401-6820', 'F'),
-(147, 'Lothaire Pottery', 63, '440-753-1337', 'M'),
-(148, 'Tina Rolstone', 51, '356-972-7530', 'F'),
-(149, 'Keith Lingwood', 39, '526-456-4766', 'M'),
-(150, 'Mikel Clerk', 40, '507-983-1730', 'M');
+(143, 'Geno Pretorius', 85, '287-144-6308', 'M');
 
 INSERT INTO Surgeons
 VALUES
@@ -271,7 +264,7 @@ VALUES
 (24, 'Femur/Tibial Open Reduction Internal Fixation', 'Ortho', '05:00:00', 'Y');
 
 -- 212 Surgeries to be scheduled (pulling random patient/procedure ID combos
--- from Mockaroo); ends at line 458.
+-- from Mockaroo); ends at line 431.
 
 INSERT INTO ToBeScheduled (PatientID, ProcedureID, Scheduled)
 VALUES
@@ -282,10 +275,8 @@ VALUES
 (107, 19, 'N'),
 (7, 14, 'N'),
 (140, 14, 'N'),
-(145, 10, 'N'),
 (67, 3, 'N'),
 (1, 3, 'N'),
-(149, 24, 'N'),
 (122, 23, 'N'),
 (66, 18, 'N'),
 (129, 4, 'N'),
@@ -302,7 +293,6 @@ VALUES
 (9, 24, 'N'),
 (82, 7, 'N'),
 (77, 20, 'N'),
-(148, 22, 'N'),
 (22, 18, 'N'),
 (15, 12, 'N'),
 (37, 13, 'N'),
@@ -310,40 +300,32 @@ VALUES
 (25, 13, 'N'),
 (32, 18, 'N'),
 (24, 18, 'N'),
-(53, 23, 'N'),
 (68, 20, 'N'),
 (3, 24, 'N'),
 (111, 14, 'N'),
 (83, 17, 'N'),
 (128, 15, 'N'),
 (47, 21, 'N'),
-(144, 8, 'N'),
 (137, 8, 'N'),
 (19, 11, 'N'),
 (120, 15, 'N'),
 (50, 2, 'N'),
 (69, 6, 'N'),
 (4, 17, 'N'),
-(74, 20, 'N'),
 (100, 23, 'N'),
 (141, 5, 'N'),
 (115, 21, 'N'),
 (23, 22, 'N'),
 (46, 16, 'N'),
-(147, 8, 'N'),
 (44, 14, 'N'),
 (36, 2, 'N'),
 (83, 19, 'N'),
-(33, 24, 'N'),
 (39, 5, 'N'),
 (132, 2, 'N'),
 (108, 19, 'N'),
 (17, 16, 'N'),
-(145, 3, 'N'),
 (21, 24, 'N'),
-(116, 14, 'N'),
 (52, 4, 'N'),
-(45, 5, 'N'),
 (28, 19, 'N'),
 (13, 24, 'N'),
 (90, 15, 'N'),
@@ -351,7 +333,6 @@ VALUES
 (43, 20, 'N'),
 (63, 18, 'N'),
 (12, 10, 'N'),
-(5, 7, 'N'),
 (11, 23, 'N'),
 (91, 11, 'N'),
 (135, 12, 'N'),
@@ -362,7 +343,6 @@ VALUES
 (44, 17, 'N'),
 (137, 16, 'N'),
 (75, 15, 'N'),
-(61, 18, 'N'),
 (117, 14, 'N'),
 (72, 24, 'N'),
 (86, 16, 'N'),
@@ -394,7 +374,6 @@ VALUES
 (64, 18, 'N'),
 (28, 14, 'N'),
 (112, 12, 'N'),
-(146, 13, 'N'),
 (141, 11, 'N'),
 (40, 21, 'N'),
 (78, 20, 'N'),
@@ -411,19 +390,15 @@ VALUES
 (27, 4, 'N'),
 (113, 6, 'N'),
 (136, 14, 'N'),
-(149, 21, 'N'),
 (143, 8, 'N'),
 (45, 5, 'N'),
 (84, 10, 'N'),
 (10, 9, 'N'),
 (136, 1, 'N'),
 (62, 20, 'N'),
-(150, 23, 'N'),
-(128, 10, 'N'),
 (52, 18, 'N'),
 (53, 14, 'N'),
 (127, 2, 'N'),
-(96, 11, 'N'),
 (106, 15, 'N'),
 (98, 19, 'N'),
 (49, 8, 'N'),
@@ -431,7 +406,6 @@ VALUES
 (96, 7, 'N'),
 (16, 6, 'N'),
 (69, 6, 'N'),
-(132, 20, 'N'),
 (14, 24, 'N'),
 (48, 14, 'N'),
 (130, 19, 'N'),
@@ -443,7 +417,6 @@ VALUES
 (103, 8, 'N'),
 (110, 9, 'N'),
 (13, 24, 'N'),
-(89, 4, 'N'),
 (81, 21, 'N'),
 (139, 7, 'N'),
 (116, 2, 'N'),
@@ -498,8 +471,18 @@ VALUES
 WHILE (SELECT Count(*) FROM SurgeonSchedule) > (SELECT Count(*) FROM SurgerySchedule)
 
 BEGIN
-  DECLARE @Proc as int = (SELECT TOP 1 ProcedureID FROM ToBeScheduled WHERE Scheduled = 'N' ORDER BY PatientID)
-  DECLARE @Pat as	int = (SELECT TOP 1 PatientID FROM ToBeScheduled WHERE Scheduled = 'N' ORDER BY PatientID)
+  DECLARE @Pat as	int = (
+  SELECT TOP 1 PatientID
+  FROM ToBeScheduled
+  WHERE Scheduled = 'N'
+  Group BY PatientID
+  ORDER BY Count(PatientID) DESC, PatientID
+)
+  DECLARE @Proc as int = (
+    SELECT TOP 1 ProcedureID
+    FROM ToBeScheduled
+    WHERE Scheduled = 'N' AND PatientID = @Pat
+  )
   DECLARE @Surgeon as int
   DECLARE @Hospital as int
   DECLARE @SurgeryTime as DateTime
@@ -541,6 +524,15 @@ BEGIN
   COMMIT
   END
 END
+
+-- Update to make sure all patients needing more than 1 surgery are marked "P".
+
+Update ToBeScheduled
+SET Scheduled = 'P'
+From ToBeScheduled t
+Join SurgerySchedule ss
+ON t.PatientID = ss.PatientID
+WHERE t.SurgeryID IS NULL AND t.Scheduled = 'N'
 
 -- Adding ToFollow column to help track if more surgeries can be scheduled after
 -- first cases.
@@ -675,6 +667,8 @@ BEGIN
   WHERE s.ID = @Surgeon AND t.Scheduled = 'N'
   ORDER BY PatientID
 
+-- Below logic detects duplicates and tries to schedule them where available.
+-- With this data set, no duplicates are scheduled for To-Follows
   IF EXISTS (SELECT * FROM SurgerySchedule WHERE PatientID = @Pat)
   BEGIN
     IF EXISTS (SELECT * FROM SurgerySchedule WHERE PatientID = @Pat AND ToFollow ='Y')
