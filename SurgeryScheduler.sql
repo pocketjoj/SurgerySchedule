@@ -587,7 +587,7 @@ GO
 
 Exec CalcToFollow
 
--- Checks to see if patients with more than one proccedure can be scheduled for
+-- Checks to see if patients with more than one procedure can be scheduled for
 -- same room and doctor to do both procedures back to back. Update statement
 -- below that sets the newly scheduled procedures as Scheduled with a Surgery ID
 -- in the ToBeScheduled tabe.
@@ -675,25 +675,68 @@ BEGIN
   WHERE s.ID = @Surgeon AND t.Scheduled = 'N'
   ORDER BY PatientID
 
--- REQ: Below SurgeryTime value being inserted is calculated field.
-  INSERT INTO SurgerySchedule (PatientID, SurgeonID, ProcedureID, HospitalID, SurgeryTime)
-  VALUES (@Pat, @Surgeon, @Proc, @Hospital, @SurgeryTime + @SurgeryLength)
-
-  UPDATE SurgerySchedule
-  SET ToFollow = 'S'
-  WHERE ID = @SurgeryID
-
-  UPDATE ToBeScheduled
-  Set Scheduled = 'Y', SurgeryID = (SELECT TOP 1 ID FROM SurgerySchedule ORDER BY ID DESC)
-  WHERE ProcedureID = @Proc AND PatientID = @Pat
-
-  IF @SurgeryTime + @SurgeryLength + @Surgery2Length >
-  (SELECT LastProcedureBy FROM SurgeonSchedule WHERE SurgeonID = @Surgeon
-  AND DatePart(day, LastProcedureBy) = DatePart(day,@SurgeryTime))
+  IF EXISTS (SELECT * FROM SurgerySchedule WHERE PatientID = @Pat)
   BEGIN
-	UPDATE SurgerySchedule
-	SET ToFollow = 'Y'
-	WHERE ID = (SELECT Count(*) FROM SurgerySchedule)
+    IF EXISTS (SELECT * FROM SurgerySchedule WHERE PatientID = @Pat AND ToFollow ='Y')
+    AND ((SELECT Specialty FROM Procedures WHERE ID = @Proc) = (Select Specialty FROM Surgeons WHERE ID = (SELECT SurgeonID FROM SurgerySchedule WHERE PatientID = @Pat)))
+    BEGIN
+      SELECT @Surgeon = ss.SurgeonID, @Hospital = ss.HospitalID, @SurgeryTime = ss.SurgeryTime, @SurgeryID = ss.ID, @SurgeryLength = pr.Proctime
+      FROM SurgerySchedule ss
+      JOIN Procedures pr
+      ON ss.ProcedureID = pr.ID
+      WHERE ss.PatientID = @Pat
+
+      INSERT INTO SurgerySchedule (PatientID, SurgeonID, ProcedureID, HospitalID, SurgeryTime)
+      VALUES (@Pat, @Surgeon, @Proc, @Hospital, @SurgeryTime + @SurgeryLength)
+
+      UPDATE SurgerySchedule
+      SET ToFollow = 'S'
+      WHERE ID = @SurgeryID
+
+      UPDATE ToBeScheduled
+      Set Scheduled = 'Y', SurgeryID = (SELECT TOP 1 ID FROM SurgerySchedule ORDER BY ID DESC)
+      WHERE ProcedureID = @Proc AND PatientID = @Pat
+
+      IF @SurgeryTime + @SurgeryLength + @Surgery2Length <
+      (SELECT LastProcedureBy FROM SurgeonSchedule WHERE SurgeonID = @Surgeon
+        AND DatePart(day, LastProcedureBy) = DatePart(day,@SurgeryTime))
+      BEGIN
+  	   UPDATE SurgerySchedule
+  	   SET ToFollow = 'Y'
+  	   WHERE ID = (SELECT Count(*) FROM SurgerySchedule)
+      END
+    END
+
+    ELSE
+    BEGIN
+      UPDATE ToBeScheduled
+      Set Scheduled = 'P'
+      WHERE PatientID = @Pat and ProcedureID = @Proc
+    END
+  END
+
+  ELSE
+  BEGIN
+-- REQ: Below SurgeryTime value being inserted is calculated field.
+    INSERT INTO SurgerySchedule (PatientID, SurgeonID, ProcedureID, HospitalID, SurgeryTime)
+    VALUES (@Pat, @Surgeon, @Proc, @Hospital, @SurgeryTime + @SurgeryLength)
+
+    UPDATE SurgerySchedule
+    SET ToFollow = 'S'
+    WHERE ID = @SurgeryID
+
+    UPDATE ToBeScheduled
+    Set Scheduled = 'Y', SurgeryID = (SELECT TOP 1 ID FROM SurgerySchedule ORDER BY ID DESC)
+    WHERE ProcedureID = @Proc AND PatientID = @Pat
+
+    IF @SurgeryTime + @SurgeryLength + @Surgery2Length <
+    (SELECT LastProcedureBy FROM SurgeonSchedule WHERE SurgeonID = @Surgeon
+      AND DatePart(day, LastProcedureBy) = DatePart(day,@SurgeryTime))
+    BEGIN
+	   UPDATE SurgerySchedule
+	   SET ToFollow = 'Y'
+	   WHERE ID = (SELECT Count(*) FROM SurgerySchedule)
+    END
   END
 
 END
