@@ -725,6 +725,15 @@ END
 -- All available days should be scheduled by above; below queries would be to
 -- analyze data and pull reports.
 
+-- REQ: -- SELECT query that uses an OR and an AND operator
+SELECT p.[Name] as "Patients Needing Additional Attention", SurgeryTime
+FROM SurgerySchedule ss
+JOIN Patients p
+ON ss.PatientID = p.ID
+JOIN Procedures pr
+ON ss.ProcedureID = pr.ID
+WHERE (pr.Implants = 'Y' AND pr.ProcLength > '04:00:00') OR p.Age > 70
+
 -- REQ: SELECT query that filters NULL rows using IS NOT NULL
 SELECT p.[Name] AS 'Scheduled'
 FROM ToBeScheduled t
@@ -751,8 +760,8 @@ WHERE SurgeonID = (
   ORDER BY Count(SurgeonID) DESC
 )
 
--- REQ: SELECT query that uses JOIN with 3 tables, 2 OPERATORS (uses 'AND' and
--- 'LIKE'), a GROUP BY clause with aggregate functions, and a HAVING clause.
+-- REQ: SELECT query that uses JOIN with 3 tables, 2 OPERATORS (uses 'AND', 'OR'
+-- AND 'LIKE'), a GROUP BY clause with aggregate functions, and a HAVING clause.
 
 -- Average Age of Male Patients being operated on due to complex Fractures at Jewish and U of L Hospitals
 
@@ -766,7 +775,7 @@ WHERE ((ss.HospitalID = 1) OR (ss.HospitalID = 2)) AND p.Gender = 'M'
 GROUP BY pr.[Name]
 HAVING pr.[Name] LIKE '%FIXATION%'
 
--- Write a  SELECT query that uses an OR and an AND operator
+
 -- Write a DML statement that DELETEs rows from a table that another table references. This script will have to also DELETE any records that reference these rows. Both of the DELETE statements need to be wrapped in a single TRANSACTION.
 -- Write a SELECT query that utilizes a JOIN, at least 2 OPERATORS (AND, OR, =, IN, BETWEEN, ETC) AND A GROUP BY clause with an aggregate function
 -- Design a NONCLUSTERED INDEX with ONE KEY COLUMN that improves the performance of one of the above queries
