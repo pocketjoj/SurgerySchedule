@@ -751,10 +751,24 @@ WHERE SurgeonID = (
   ORDER BY Count(SurgeonID) DESC
 )
 
+-- REQ: SELECT query that uses JOIN with 3 tables, 2 OPERATORS (uses 'AND' and
+-- 'LIKE'), a GROUP BY clause with aggregate functions, and a HAVING clause.
+
+-- Average Age of Male Patients being operated on due to complex Fractures at Jewish and U of L Hospitals
+
+SELECT pr.[Name], Avg(p.Age) AS 'Average Age', Count(pr.[Name]) AS 'Total Surgeries'
+FROM SurgerySchedule ss
+JOIN Patients p
+ON ss.PatientID = p.ID
+JOIN Procedures pr
+ON ss.ProcedureID = pr.ID
+WHERE ((ss.HospitalID = 1) OR (ss.HospitalID = 2)) AND p.Gender = 'M'
+GROUP BY pr.[Name]
+HAVING pr.[Name] LIKE '%FIXATION%'
+
 -- Write a  SELECT query that uses an OR and an AND operator
 -- Write a DML statement that DELETEs rows from a table that another table references. This script will have to also DELETE any records that reference these rows. Both of the DELETE statements need to be wrapped in a single TRANSACTION.
 -- Write a SELECT query that utilizes a JOIN, at least 2 OPERATORS (AND, OR, =, IN, BETWEEN, ETC) AND A GROUP BY clause with an aggregate function
--- Write a SELECT query that utilizes a JOIN with 3 or more tables, at 2 OPERATORS (AND, OR, =, IN, BETWEEN, ETC), a GROUP BY clause with an aggregate function, and a HAVING clause
 -- Design a NONCLUSTERED INDEX with ONE KEY COLUMN that improves the performance of one of the above queries
 -- Design a NONCLUSTERED INDEX with TWO KEY COLUMNS that improves the performance of one of the above queries
 -- Design a NONCLUSTERED INDEX with AT LEAST ONE KEY COLUMN and AT LEAST ONE INCLUDED COLUMN that improves the performance of one of the above queries
