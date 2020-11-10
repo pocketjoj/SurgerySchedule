@@ -499,16 +499,16 @@ WHILE (SELECT Count(*) FROM SurgeonSchedule) > (SELECT Count(*) FROM SurgerySche
 
 BEGIN
   DECLARE @Proc as int = (SELECT TOP 1 ProcedureID FROM ToBeScheduled WHERE Scheduled = 'N' ORDER BY PatientID)
-  DECLARE @Patient as	int = (SELECT TOP 1 PatientID FROM ToBeScheduled WHERE Scheduled = 'N' ORDER BY PatientID)
+  DECLARE @Pat as	int = (SELECT TOP 1 PatientID FROM ToBeScheduled WHERE Scheduled = 'N' ORDER BY PatientID)
   DECLARE @Surgeon as int
   DECLARE @Hospital as int
   DECLARE @SurgeryTime as DateTime
 
-  IF EXISTS (SELECT PatientID FROM SurgerySchedule WHERE PatientID = @Patient)
+  IF EXISTS (SELECT PatientID FROM SurgerySchedule WHERE PatientID = @Pat)
   BEGIN
 	UPDATE ToBeScheduled
 	SET scheduled = 'P'
-	WHERE PatientID = @Patient AND ProcedureID = @Proc
+	WHERE PatientID = @Pat AND ProcedureID = @Proc
   END
 
   ELSE
@@ -532,12 +532,12 @@ BEGIN
   BEGIN TRANSACTION
 	INSERT INTO SurgerySchedule (PatientID, SurgeonID, ProcedureID, HospitalID, SurgeryTime)
 	VALUES
-	(@Patient, @Surgeon, @Proc, @Hospital, @SurgeryTime)
+	(@Pat, @Surgeon, @Proc, @Hospital, @SurgeryTime)
 
 -- REQ: DML Statement UPDATES rows with a WHERE clause; the WHERE clause values are variables.
 	UPDATE ToBeScheduled
-	SET scheduled = 'Y', SurgeryID = (SELECT ID FROM SurgerySchedule WHERE PatientID = @Patient AND ProcedureID = @Proc)
-	WHERE PatientID = @Patient AND ProcedureID = @Proc
+	SET scheduled = 'Y', SurgeryID = (SELECT ID FROM SurgerySchedule WHERE PatientID = @Pat AND ProcedureID = @Proc)
+	WHERE PatientID = @Pat AND ProcedureID = @Proc
   COMMIT
   END
 END
@@ -651,7 +651,7 @@ AND (SELECT COUNT(*) FROM ToBeScheduled WHERE Scheduled = 'N') > 0
 
 BEGIN
   DECLARE @Proc as int
-  DECLARE @Patient as int
+  DECLARE @Pat as int
   DECLARE @Surgeon as int
   DECLARE @Hospital as int
   DECLARE @SurgeryTime as DateTime
@@ -666,7 +666,7 @@ BEGIN
   WHERE ToFollow = 'Y'
   ORDER BY SurgeryTime
 
-  SELECT TOP 1 @Proc = t.ProcedureID, @Patient = t.PatientID, @Surgery2Length = p.ProcTime
+  SELECT TOP 1 @Proc = t.ProcedureID, @Pat = t.PatientID, @Surgery2Length = p.ProcTime
   FROM ToBeScheduled t
   JOIN Procedures p
   ON t.ProcedureID = p.ID
@@ -677,7 +677,7 @@ BEGIN
 
 -- REQ: Below SurgeryTime value being inserted is calculated field.
   INSERT INTO SurgerySchedule (PatientID, SurgeonID, ProcedureID, HospitalID, SurgeryTime)
-  VALUES (@Patient, @Surgeon, @Proc, @Hospital, @SurgeryTime + @SurgeryLength)
+  VALUES (@Pat, @Surgeon, @Proc, @Hospital, @SurgeryTime + @SurgeryLength)
 
   UPDATE SurgerySchedule
   SET ToFollow = 'S'
@@ -685,7 +685,7 @@ BEGIN
 
   UPDATE ToBeScheduled
   Set Scheduled = 'Y', SurgeryID = (SELECT TOP 1 ID FROM SurgerySchedule ORDER BY ID DESC)
-  WHERE ProcedureID = @Proc AND PatientID = @Patient
+  WHERE ProcedureID = @Proc AND PatientID = @Pat
 
   IF @SurgeryTime + @SurgeryLength + @Surgery2Length >
   (SELECT LastProcedureBy FROM SurgeonSchedule WHERE SurgeonID = @Surgeon
@@ -704,9 +704,9 @@ DECLARE @Counter int = 1;
 WHILE (@Counter > 0)
 BEGIN
   DECLARE @Procedure int = NULL;
-  DECLARE @Pat int;
+  DECLARE @Patient int;
 
-  SELECT @Procedure = ProcedureID, @Pat = PatientID
+  SELECT @Procedure = ProcedureID, @Patient = PatientID
   FROM ToBeScheduled
   GROUP BY ProcedureID, PatientID
   HAVING COUNT(ProcedureID) > 1 AND COUNT(PatientID) > 1
@@ -714,9 +714,9 @@ BEGIN
 -- REQ: DELETEs a set of rows with a WHERE clause. The values used in the WHERE clause are variables.
   DELETE TOP (1)
   FROM ToBeScheduled
-  WHERE ProcedureID = @Proc AND PatientID = @Patient
+  WHERE ProcedureID = @Procedure AND PatientID = @Patient
 
-  IF @Proc IS null
+  IF @Procedure IS null
   BEGIN
     SET @counter = 0
   END
