@@ -780,6 +780,7 @@ WHERE SurgeryID is not null
 ORDER BY p.[Name]
 
 -- REQ: SELECT query that utilizes a GROUP BY clause along with an aggregate function
+-- Query shows total count of procedures scheduled to be performed.
 SELECT p.[Name] as 'Procedure', Count(ss.ProcedureID) as 'Procedure Total'
 FROM SurgerySchedule ss
 JOIN Procedures p
@@ -788,7 +789,8 @@ GROUP BY p.[Name]
 ORDER BY Count(ProcedureID) DESC
 
 -- REQ: SELECT query that utilizes a SUBQUERY
-SELECT s.[Name]
+-- Query to show which Surgeon has the most cases.
+SELECT [Name]
 FROM Surgeons
 WHERE SurgeonID = (
   SELECT TOP 1 SurgeonID
@@ -800,7 +802,8 @@ WHERE SurgeonID = (
 -- REQ: SELECT query that uses JOIN with 3 tables, 2 OPERATORS (uses 'AND', 'OR'
 -- AND 'LIKE'), a GROUP BY clause with aggregate functions, and a HAVING clause.
 
--- Average Age of Male Patients being operated on due to complex Fractures at Jewish and U of L Hospitals
+-- Average Age of Male Patients being operated on due to complex Fractures at
+-- U of L and Norton Audubon Hospitals
 
 SELECT pr.[Name], Avg(p.Age) AS 'Average Age', Count(pr.[Name]) AS 'Total Surgeries'
 FROM SurgerySchedule ss
@@ -808,12 +811,43 @@ JOIN Patients p
 ON ss.PatientID = p.ID
 JOIN Procedures pr
 ON ss.ProcedureID = pr.ID
-WHERE ((ss.HospitalID = 1) OR (ss.HospitalID = 2)) AND p.Gender = 'M'
+WHERE ((ss.HospitalID = 2) OR (ss.HospitalID = 4)) AND p.Gender = 'M'
 GROUP BY pr.[Name]
 HAVING pr.[Name] LIKE '%FIXATION%'
+ORDER BY 'Total Surgeries'
 
 
--- Write a DML statement that DELETEs rows from a table that another table references. This script will have to also DELETE any records that reference these rows. Both of the DELETE statements need to be wrapped in a single TRANSACTION.
+
+-- Patients Philipa Tiebe and Talbot Willcott decided to use another practice.
+-- They were not scheduled, but need to be removed from the patient list and the
+-- ToBeScheduled table.
+
+DECLARE @Pat1 int = (
+  SELECT ID
+  FROM patients
+  WHERE [Name] = 'Philipa Tiebe'
+)
+DECLARE @Pat2 int = (
+  SELECT ID
+  FROM patients
+  WHERE [Name] = 'Talbot Willcott'
+)
+
+-- REQ: DML statement that DELETEs from a table that another table references.
+-- This script will have to also DELETE any records that reference these rows.
+-- Both of the DELETE statements need to be wrapped in a single TRANSACTION.
+
+BEGIN TRANSACTION
+
+DELETE FROM ToBeScheduled
+WHERE PatientID = @Pat1 OR PatientID = @Pat2
+
+DELETE FROM Patients
+WHERE ID = @Pat1 OR ID = @Pat2
+
+COMMIT
+
+
 -- Write a SELECT query that utilizes a JOIN, at least 2 OPERATORS (AND, OR, =, IN, BETWEEN, ETC) AND A GROUP BY clause with an aggregate function
 -- Design a NONCLUSTERED INDEX with ONE KEY COLUMN that improves the performance of one of the above queries
 -- Design a NONCLUSTERED INDEX with TWO KEY COLUMNS that improves the performance of one of the above queries
