@@ -1,6 +1,6 @@
--- This database will simulate a surgery schedule "Bluesgrass Ortho and Spine
--- Surgical Associates" for a one week period in which up to 161 surgeries are
--- to be scheduled. NOTE: Requirements will have "REQ" to start comment.
+-- This database will simulate a surgery schedule for a one week period in which up to 161 surgeries are to be scheduled.
+-- Some of the requirements are done within the "auto-scheduler", and those line numbers are noted in the requirements comments at the end.
+-- Requirement comments start on line 760.
 
 CREATE DATABASE SurgerySchedule;
 GO
@@ -75,149 +75,149 @@ GO
 --Insert patient data from mockaroo (through line 220)
 INSERT INTO Patients
 VALUES
-(1, 'Devin Lissimore', 46, '674-585-3296', 'M'),
-(2, 'Anselm Warfield', 90, '693-973-6210', 'M'),
-(3, 'Aharon Kretchmer', 59, '597-676-6877', 'M'),
-(4, 'Chadd Gullick', 28, '612-634-3296', 'M'),
-(5, 'Howard Laming', 37, '601-669-9586', 'M'),
-(6, 'Goran Goodenough', 41, '273-407-4503', 'M'),
-(7, 'Kattie Forri', 45, '201-222-4533', 'F'),
-(8, 'Starr Calf', 42, '504-943-7113', 'F'),
-(9, 'Callida Ciobutaru', 55, '655-114-7296', 'F'),
-(10, 'Tiebold Machen', 43, '424-412-2094', 'M'),
-(11, 'Prentiss Vernay', 60, '592-683-6708', 'M'),
-(12, 'Deva Oxlade', 27, '271-509-5473', 'F'),
-(13, 'Dael Stendell', 82, '148-271-6385', 'M'),
-(14, 'Hubey Connelly', 31, '747-756-7732', 'M'),
-(15, 'Nanine Josskowitz', 24, '679-198-9200', 'F'),
-(16, 'Ethelind Quinet', 90, '449-836-3143', 'F'),
-(17, 'Julie Kuna', 66, '234-464-6775', 'F'),
-(18, 'Shoshana Soans', 33, '204-530-1202', 'F'),
-(19, 'Mabelle Kepling', 27, '858-688-3699', 'F'),
-(20, 'Cilka Hollebon', 74, '128-976-4676', 'F'),
-(21, 'Symon Jelly', 22, '854-756-1915', 'M'),
-(22, 'Julina Caldaro', 36, '138-100-7283', 'F'),
-(23, 'Haskell Lerwill', 89, '611-745-7027', 'M'),
-(24, 'Sigismund Dmitrovic', 60, '402-847-5097', 'M'),
-(25, 'Roger Byrd', 40, '114-165-6968', 'M'),
-(26, 'Ladonna Farreil', 44, '192-484-9120', 'F'),
-(27, 'Gilligan Stiggles', 81, '409-548-8980', 'F'),
-(28, 'Sal Matyugin', 75, '569-608-5225', 'M'),
-(29, 'Cheri Hancorn', 35, '910-899-1572', 'F'),
-(30, 'Arvy Crofthwaite', 67, '924-296-6800', 'M'),
-(31, 'Evangelina Ferreira', 72, '407-803-6835', 'F'),
-(32, 'Tansy Wardhough', 33, '627-439-1455', 'F'),
-(33, 'Hayden Godley', 66, '190-841-0746', 'M'),
-(34, 'Tamra Bull', 87, '998-933-5148', 'F'),
-(35, 'Dalton Yeo', 59, '196-799-5039', 'M'),
-(36, 'Consalve Obin', 33, '378-596-9811', 'M'),
-(37, 'Sancho Oldfield', 30, '321-463-0446', 'M'),
-(38, 'Sallyanne Coche', 73, '268-995-1676', 'F'),
-(39, 'Chester Cattlemull', 62, '318-334-4748', 'M'),
-(40, 'Claudian Goodridge', 18, '139-109-4684', 'M'),
-(41, 'Lauryn Bellino', 23, '662-241-0972', 'F'),
-(42, 'Bondy Byforth', 50, '403-935-3785', 'M'),
+(1, 'Devin Lissimore', 46, '502-585-3296', 'M'),
+(2, 'Anselm Warfield', 90, '502-973-6210', 'M'),
+(3, 'Aharon Kretchmer', 59, '502-676-6877', 'M'),
+(4, 'Chadd Gullick', 28, '502-634-3296', 'M'),
+(5, 'Howard Laming', 37, '502-669-9586', 'M'),
+(6, 'Goran Goodenough', 41, '502-407-4503', 'M'),
+(7, 'Kattie Forri', 45, '502-222-4533', 'F'),
+(8, 'Starr Calf', 42, '502-943-7113', 'F'),
+(9, 'Callida Ciobutaru', 55, '502-114-7296', 'F'),
+(10, 'Tiebold Machen', 43, '502-412-2094', 'M'),
+(11, 'Prentiss Vernay', 60, '502-683-6708', 'M'),
+(12, 'Deva Oxlade', 27, '502-509-5473', 'F'),
+(13, 'Dael Stendell', 82, '502-271-6385', 'M'),
+(14, 'Hubey Connelly', 31, '502-756-7732', 'M'),
+(15, 'Nanine Josskowitz', 24, '502-198-9200', 'F'),
+(16, 'Ethelind Quinet', 90, '502-836-3143', 'F'),
+(17, 'Julie Kuna', 66, '502-464-6775', 'F'),
+(18, 'Shoshana Soans', 33, '502-530-1202', 'F'),
+(19, 'Mabelle Kepling', 27, '502-688-3699', 'F'),
+(20, 'Cilka Hollebon', 74, '502-976-4676', 'F'),
+(21, 'Symon Jelly', 22, '502-756-1915', 'M'),
+(22, 'Julina Caldaro', 36, '864-100-7283', 'F'),
+(23, 'Haskell Lerwill', 89, '864-745-7027', 'M'),
+(24, 'Sigismund Dmitrovic', 60, '502-847-5097', 'M'),
+(25, 'Roger Byrd', 40, '864-165-6968', 'M'),
+(26, 'Ladonna Farreil', 44, '864-484-9120', 'F'),
+(27, 'Gilligan Stiggles', 81, '303-548-8980', 'F'),
+(28, 'Sal Matyugin', 75, '502-608-5225', 'M'),
+(29, 'Cheri Hancorn', 35, '502-899-1572', 'F'),
+(30, 'Arvy Crofthwaite', 67, '502-296-6800', 'M'),
+(31, 'Evangelina Ferreira', 72, '502-803-6835', 'F'),
+(32, 'Tansy Wardhough', 33, '864-439-1455', 'F'),
+(33, 'Hayden Godley', 66, '864-841-0746', 'M'),
+(34, 'Tamra Bull', 87, '864-933-5148', 'F'),
+(35, 'Dalton Yeo', 59, '864-799-5039', 'M'),
+(36, 'Consalve Obin', 33, '864-596-9811', 'M'),
+(37, 'Sancho Oldfield', 30, '864-463-0446', 'M'),
+(38, 'Sallyanne Coche', 73, '864-995-1676', 'F'),
+(39, 'Chester Cattlemull', 62, '502-334-4748', 'M'),
+(40, 'Claudian Goodridge', 18, '502-109-4684', 'M'),
+(41, 'Lauryn Bellino', 23, '502-241-0972', 'F'),
+(42, 'Bondy Byforth', 50, '502-935-3785', 'M'),
 (43, 'Jerad Stawell', 57, '237-874-9747', 'M'),
 (44, 'Bambie Basham', 89, '817-763-5826', 'F'),
-(45, 'Cecile Awton', 79, '588-633-9822', 'F'),
-(46, 'Shana Vedeniktov', 75, '495-949-3168', 'F'),
-(47, 'Gerianne Leathley', 80, '805-106-6889', 'F'),
-(48, 'Maynard McNeachtain', 82, '838-523-6576', 'M'),
-(49, 'Jaynell Fishbourn', 55, '357-284-2429', 'F'),
-(50, 'Greg Rozea', 62, '419-589-3202', 'M'),
-(51, 'Maribel Figura', 57, '289-358-6549', 'F'),
-(52, 'Matthaeus Jancik', 46, '592-511-2735', 'M'),
-(53, 'Bondy Ravenscroftt', 63, '813-139-8824', 'M'),
-(54, 'Pauletta Hindenburg', 53, '940-936-7491', 'F'),
-(55, 'Nilson Wann', 83, '184-804-2741', 'M'),
+(45, 'Cecile Awton', 79, '330-633-9822', 'F'),
+(46, 'Shana Vedeniktov', 75, '502-949-3168', 'F'),
+(47, 'Gerianne Leathley', 80, '864-106-6889', 'F'),
+(48, 'Maynard McNeachtain', 82, '502-523-6576', 'M'),
+(49, 'Jaynell Fishbourn', 55, '502-284-2429', 'F'),
+(50, 'Greg Rozea', 62, '502-589-3202', 'M'),
+(51, 'Maribel Figura', 57, '502-358-6549', 'F'),
+(52, 'Matthaeus Jancik', 46, '502-511-2735', 'M'),
+(53, 'Bondy Ravenscroftt', 63, '502-139-8824', 'M'),
+(54, 'Pauletta Hindenburg', 53, '502-936-7491', 'F'),
+(55, 'Nilson Wann', 83, '864-804-2741', 'M'),
 (56, 'Ruperto Rhodef', 53, '817-852-8483', 'M'),
-(57, 'Far Sigfrid', 46, '835-642-0932', 'M'),
-(58, 'Coralyn Gash', 66, '460-920-4584', 'F'),
-(59, 'Amitie Scotsbrook', 27, '787-963-2116', 'F'),
-(60, 'Burty Escot', 62, '417-247-6250', 'M'),
-(61, 'Isidora McAlinden', 33, '994-880-9283', 'F'),
-(62, 'Dela Blacksell', 63, '350-928-2046', 'F'),
-(63, 'Cherry Granger', 22, '444-416-1034', 'F'),
-(64, 'Ivette Sircomb', 66, '510-908-5141', 'F'),
-(65, 'Chastity Simmonds', 18, '966-843-3051', 'F'),
-(66, 'Cris Berfoot', 80, '909-874-1456', 'F'),
-(67, 'Lorena Este', 42, '153-408-1615', 'F'),
-(68, 'Shanda Garnsey', 88, '716-524-0301', 'F'),
-(69, 'Bentlee Stokes', 44, '464-410-1207', 'M'),
-(70, 'Riki Peare', 21, '591-809-8523', 'F'),
-(71, 'Vinson Houlison', 79, '995-226-3395', 'M'),
+(57, 'Far Sigfrid', 46, '864-642-0932', 'M'),
+(58, 'Coralyn Gash', 66, '502-920-4584', 'F'),
+(59, 'Amitie Scotsbrook', 27, '502-963-2116', 'F'),
+(60, 'Burty Escot', 62, '502-247-6250', 'M'),
+(61, 'Isidora McAlinden', 33, '502-880-9283', 'F'),
+(62, 'Dela Blacksell', 63, '502-928-2046', 'F'),
+(63, 'Cherry Granger', 22, '864-416-1034', 'F'),
+(64, 'Ivette Sircomb', 66, '864-908-5141', 'F'),
+(65, 'Chastity Simmonds', 18, '864-843-3051', 'F'),
+(66, 'Cris Berfoot', 80, '502-874-1456', 'F'),
+(67, 'Lorena Este', 42, '864-408-1615', 'F'),
+(68, 'Shanda Garnsey', 88, '502-524-0301', 'F'),
+(69, 'Bentlee Stokes', 44, '502-410-1207', 'M'),
+(70, 'Riki Peare', 21, '502-809-8523', 'F'),
+(71, 'Vinson Houlison', 79, '502-226-3395', 'M'),
 (72, 'Marika Burnsyde', 48, '694-793-0933', 'F'),
-(73, 'Karoline Trim', 52, '527-725-1040', 'F'),
-(74, 'Holly-anne Idiens', 23, '609-592-5617', 'F'),
-(75, 'Robby Stopps', 22, '314-444-9065', 'M'),
-(76, 'Harman Grigore', 67, '607-417-2552', 'M'),
-(77, 'Drake Jurgensen', 44, '473-651-7010', 'M'),
-(78, 'Horst Ower', 39, '188-431-8505', 'M'),
-(79, 'Philipa Tiebe', 60, '845-292-5779', 'F'),
-(80, 'Polly Lytle', 83, '146-964-8853', 'F'),
-(81, 'Regine Beedham', 45, '835-670-7759', 'F'),
-(82, 'Allis Humbert', 25, '652-416-7594', 'F'),
-(83, 'Atlante Korlat', 32, '826-487-1700', 'F'),
-(84, 'Lothario Gullefant', 18, '516-823-5344', 'M'),
-(85, 'Burgess Blakebrough', 55, '212-756-3950', 'M'),
-(86, 'Zabrina Rusbridge', 27, '957-434-9999', 'F'),
-(87, 'Monti Milley', 51, '572-351-0701', 'M'),
-(88, 'Rasia Tiltman', 39, '273-846-9238', 'F'),
-(89, 'Rosaline Kynvin', 87, '164-852-4633', 'F'),
-(90, 'Chery Shewan', 37, '867-375-4958', 'F'),
-(91, 'Letta Prisley', 46, '393-167-6442', 'F'),
-(92, 'Idaline Kennaway', 52, '559-804-3647', 'F'),
-(93, 'Robina Barthrop', 59, '295-247-6222', 'F'),
-(94, 'Andra Beare', 43, '658-196-9828', 'F'),
-(95, 'Galvin Roscow', 86, '996-600-6321', 'M'),
-(96, 'Clayson Webster', 49, '612-746-1667', 'M'),
-(97, 'Arlina Ainsworth', 43, '197-641-7824', 'F'),
-(98, 'Chicky Murrock', 79, '796-983-6286', 'F'),
-(99, 'Faydra Rickasse', 33, '936-140-7891', 'F'),
-(100, 'Nial Metzig', 47, '160-582-3548', 'M'),
-(101, 'Arty Teare', 60, '335-409-4628', 'M'),
-(102, 'Hammad Barter', 44, '452-698-7820', 'M'),
-(103, 'Lorettalorna Pragnall', 23, '679-272-7674', 'F'),
-(104, 'Vince Blanko', 20, '592-246-6195', 'M'),
-(105, 'Briano Rogge', 63, '121-654-6851', 'M'),
-(106, 'Abagael Bawcock', 66, '553-248-7297', 'F'),
-(107, 'Baldwin Whittier', 89, '955-210-0202', 'M'),
-(108, 'Dianne Clausson', 50, '527-488-5034', 'F'),
-(109, 'Artemus Steventon', 66, '899-295-2313', 'M'),
+(73, 'Karoline Trim', 52, '502-725-1040', 'F'),
+(74, 'Holly-anne Idiens', 23, '864-592-5617', 'F'),
+(75, 'Robby Stopps', 22, '502-444-9065', 'M'),
+(76, 'Harman Grigore', 67, '502-417-2552', 'M'),
+(77, 'Drake Jurgensen', 44, '502-651-7010', 'M'),
+(78, 'Horst Ower', 39, '502-431-8505', 'M'),
+(79, 'Philipa Tiebe', 60, '502-292-5779', 'F'),
+(80, 'Polly Lytle', 83, '502-964-8853', 'F'),
+(81, 'Regine Beedham', 45, '502-670-7759', 'F'),
+(82, 'Allis Humbert', 25, '502-416-7594', 'F'),
+(83, 'Atlante Korlat', 32, '502-487-1700', 'F'),
+(84, 'Lothario Gullefant', 18, '502-823-5344', 'M'),
+(85, 'Burgess Blakebrough', 55, '502-756-3950', 'M'),
+(86, 'Zabrina Rusbridge', 27, '864-434-9999', 'F'),
+(87, 'Monti Milley', 51, '586-351-0701', 'M'),
+(88, 'Rasia Tiltman', 39, '502-846-9238', 'F'),
+(89, 'Rosaline Kynvin', 87, '502-852-4633', 'F'),
+(90, 'Chery Shewan', 37, '502-375-4958', 'F'),
+(91, 'Letta Prisley', 46, '502-167-6442', 'F'),
+(92, 'Idaline Kennaway', 52, '864-804-3647', 'F'),
+(93, 'Robina Barthrop', 59, '502-247-6222', 'F'),
+(94, 'Andra Beare', 43, '864-196-9828', 'F'),
+(95, 'Galvin Roscow', 86, '502-600-6321', 'M'),
+(96, 'Clayson Webster', 49, '502-746-1667', 'M'),
+(97, 'Arlina Ainsworth', 43, '502-641-7824', 'F'),
+(98, 'Chicky Murrock', 79, '502-983-6286', 'F'),
+(99, 'Faydra Rickasse', 33, '502-140-7891', 'F'),
+(100, 'Nial Metzig', 47, '502-582-3548', 'M'),
+(101, 'Arty Teare', 60, '502-409-4628', 'M'),
+(102, 'Hammad Barter', 44, '864-698-7820', 'M'),
+(103, 'Lorettalorna Pragnall', 23, '864-272-7674', 'F'),
+(104, 'Vince Blanko', 20, '502-246-6195', 'M'),
+(105, 'Briano Rogge', 63, '502-654-6851', 'M'),
+(106, 'Abagael Bawcock', 66, '502-248-7297', 'F'),
+(107, 'Baldwin Whittier', 89, '502-210-0202', 'M'),
+(108, 'Dianne Clausson', 50, '502-488-5034', 'F'),
+(109, 'Artemus Steventon', 66, '502-295-2313', 'M'),
 (110, 'Rip Lamboll', 79, '302-922-4544', 'M'),
-(111, 'Colby Traviss', 84, '972-754-2627', 'M'),
-(112, 'Wright Loud', 23, '535-986-2505', 'M'),
-(113, 'Murvyn Sheering', 40, '370-510-3997', 'M'),
-(114, 'Pall Comberbach', 27, '591-156-4637', 'M'),
-(115, 'Ardith Saggs', 59, '495-412-3871', 'F'),
-(116, 'Olenolin Kamenar', 31, '819-796-6761', 'M'),
-(117, 'Fawn Gabbitas', 39, '643-182-7162', 'F'),
-(118, 'Talbot Willcott', 66, '275-670-6212', 'M'),
-(119, 'Willem Amott', 77, '185-465-1339', 'M'),
-(120, 'Staci Deans', 86, '603-476-3513', 'F'),
-(121, 'Kort Flewan', 62, '634-752-5568', 'M'),
-(122, 'Coraline McGinn', 41, '303-675-9391', 'F'),
-(123, 'Debera Furnell', 72, '242-921-5072', 'F'),
-(124, 'Patton Bridgen', 50, '432-157-2571', 'M'),
-(125, 'Malissa Bachman', 39, '515-454-0061', 'F'),
-(126, 'Carrissa Pavlov', 49, '292-154-2871', 'F'),
-(127, 'Pierrette Toner', 62, '703-987-8997', 'F'),
-(128, 'Vick Klasing', 29, '589-826-7175', 'M'),
-(129, 'Rubia Widmore', 54, '698-249-8279', 'F'),
-(130, 'Lorita Quinnette', 29, '621-373-4232', 'F'),
-(131, 'Valerie Berka', 72, '175-850-4823', 'F'),
-(132, 'Wilhelmina Toohey', 31, '848-519-9086', 'F'),
-(133, 'Kendal Gilberthorpe', 81, '483-915-8795', 'M'),
+(111, 'Colby Traviss', 84, '502-754-2627', 'M'),
+(112, 'Wright Loud', 23, '502-986-2505', 'M'),
+(113, 'Murvyn Sheering', 40, '502-510-3997', 'M'),
+(114, 'Pall Comberbach', 27, '502-156-4637', 'M'),
+(115, 'Ardith Saggs', 59, '504-412-3871', 'F'),
+(116, 'Olenolin Kamenar', 31, '502-796-6761', 'M'),
+(117, 'Fawn Gabbitas', 39, '502-182-7162', 'F'),
+(118, 'Talbot Willcott', 66, '502-670-6212', 'M'),
+(119, 'Willem Amott', 77, '502-465-1339', 'M'),
+(120, 'Staci Deans', 86, '502-476-3513', 'F'),
+(121, 'Kort Flewan', 62, '502-752-5568', 'M'),
+(122, 'Coraline McGinn', 41, '502-675-9391', 'F'),
+(123, 'Debera Furnell', 72, '502-921-5072', 'F'),
+(124, 'Patton Bridgen', 50, '502-157-2571', 'M'),
+(125, 'Malissa Bachman', 39, '502-454-0061', 'F'),
+(126, 'Carrissa Pavlov', 49, '502-154-2871', 'F'),
+(127, 'Pierrette Toner', 62, '502-987-8997', 'F'),
+(128, 'Vick Klasing', 29, '864-826-7175', 'M'),
+(129, 'Rubia Widmore', 54, '330-249-8279', 'F'),
+(130, 'Lorita Quinnette', 29, '502-373-4232', 'F'),
+(131, 'Valerie Berka', 72, '502-850-4823', 'F'),
+(132, 'Wilhelmina Toohey', 31, '502-519-9086', 'F'),
+(133, 'Kendal Gilberthorpe', 81, '502-915-8795', 'M'),
 (134, 'Jourdan Hadny', 19, '608-536-5125', 'F'),
-(135, 'Gabbie Chalder', 48, '119-743-2567', 'M'),
-(136, 'Cirilo Matchell', 46, '958-226-1483', 'M'),
-(137, 'Godart MacGilrewy', 83, '937-261-2336', 'M'),
-(138, 'Madella Ferreira', 74, '944-932-0249', 'F'),
-(139, 'Levy Flemmich', 38, '741-768-7265', 'M'),
-(140, 'Sigvard Passler', 79, '149-145-4256', 'M'),
+(135, 'Gabbie Chalder', 48, '502-743-2567', 'M'),
+(136, 'Cirilo Matchell', 46, '502-226-1483', 'M'),
+(137, 'Godart MacGilrewy', 83, '502-261-2336', 'M'),
+(138, 'Madella Ferreira', 74, '502-932-0249', 'F'),
+(139, 'Levy Flemmich', 38, '502-768-7265', 'M'),
+(140, 'Sigvard Passler', 79, '502-145-4256', 'M'),
 (141, 'Bartolemo Dacey', 75, '688-762-3651', 'M'),
-(142, 'Whitman Barstowk', 75, '899-225-3967', 'M'),
-(143, 'Geno Pretorius', 85, '287-144-6308', 'M');
+(142, 'Whitman Barstowk', 75, '864-225-3967', 'M'),
+(143, 'Geno Pretorius', 85, '502-144-6308', 'M');
 
 INSERT INTO Surgeons
 VALUES
@@ -496,11 +496,7 @@ BEGIN
 
   ELSE
   BEGIN
--- REQ: SELECT query that uses a join with over three tables.
--- REQ: SELECT query that uses a LEFT JOIN
--- REQ: SELECT query that uses an Order By clause.
--- REQ: SELECT query that uses WHERE clause with a variable.
--- REQ: SELECT query that uses uses an "AND" operator.
+
 	Select TOP 1 @Surgeon = s.ID, @Hospital = ss.HospitalID, @SurgeryTime = ss.StartTime
 	FROM Surgeons s
 	JOIN Procedures	p
@@ -554,7 +550,6 @@ WHILE (@Count < 1)
 BEGIN
 	DECLARE @SurgeryID as int = NULL
 
--- REQ: SELECT query that also uses a join.
 	SELECT TOP 1 @SurgeryID = ss.ID
 	FROM SurgerySchedule ss
 	JOIN Procedures p
@@ -711,7 +706,7 @@ BEGIN
 
   ELSE
   BEGIN
--- REQ: Below SurgeryTime value being inserted is calculated field.
+
     INSERT INTO SurgerySchedule (PatientID, SurgeonID, ProcedureID, HospitalID, SurgeryTime)
     VALUES (@Pat, @Surgeon, @Proc, @Hospital, @SurgeryTime + @SurgeryLength)
 
@@ -736,6 +731,7 @@ BEGIN
 END
 
 -- Below loop will locate and delete duplicate patients from ToBeScheduled.
+
 DECLARE @Counter int = 1;
 
 WHILE (@Counter > 0)
@@ -748,7 +744,6 @@ BEGIN
   GROUP BY ProcedureID, PatientID
   HAVING COUNT(ProcedureID) > 1 AND COUNT(PatientID) > 1
 
--- REQ: DELETEs a set of rows with a WHERE clause. The values used in the WHERE clause are variables.
   DELETE TOP (1)
   FROM ToBeScheduled
   WHERE ProcedureID = @Procedure AND PatientID = @Patient
@@ -759,19 +754,25 @@ BEGIN
   END
 END
 
--- All available days should be scheduled by above; below queries would be to
--- analyze data and pull reports.
+-- All available days should be scheduled by above, filling out the SurgerySchedule table. Requirements are listed below.
 
--- REQ: -- SELECT query that uses an OR and an AND operator
+
+-- Write a SELECT query that uses a WHERE clause
+-- Return patients with local phone number.
+SELECT [Name]
+FROM Patients
+WHERE PhoneNumber LIKE '502%'
+
+-- Write a  SELECT query that uses an OR and an AND operator
 SELECT p.[Name] as "Patients Needing Additional Attention", SurgeryTime
 FROM SurgerySchedule ss
 JOIN Patients p
 ON ss.PatientID = p.ID
 JOIN Procedures pr
 ON ss.ProcedureID = pr.ID
-WHERE (pr.Implants = 'Y' AND pr.ProcLength > '04:00:00') OR p.Age > 70
+WHERE (pr.Implants = 'Y' AND pr.ProcTime > '04:00:00') OR p.Age > 70
 
--- REQ: SELECT query that filters NULL rows using IS NOT NULL
+-- Write a  SELECT query that filters NULL rows using IS NOT NULL
 SELECT p.[Name] AS 'Scheduled'
 FROM ToBeScheduled t
 JOIN Patients p
@@ -779,7 +780,46 @@ ON t.PatientID = p.ID
 WHERE SurgeryID is not null
 ORDER BY p.[Name]
 
--- REQ: SELECT query that utilizes a GROUP BY clause along with an aggregate function
+-- Write a DML statement that UPDATEs a set of rows with a WHERE clause. The values used in the WHERE clause should be a variable
+-- DONE ON LINES 517-519.
+
+-- Write a DML statement that DELETEs a set of rows with a WHERE clause. The values used in the WHERE clause should be a variable
+-- Removing patient from the ToBeScheduled category by phone number.
+DECLARE @Descheduled int = (SELECT ID FROM Patients WHERE PhoneNumber = '848-519-9086')
+
+DELETE FROM ToBeScheduled
+WHERE PatientID = @Descheduled
+
+-- Write a  SELECT query that utilizes a JOIN
+-- Would produce a phone number for all patients able to be scheduled this week.
+SELECT DISTINCT p.[Name], p.PhoneNumber
+FROM Patients p
+JOIN ToBeScheduled t
+ON t.PatientID = p.ID
+WHERE t.Scheduled = 'Y'
+
+-- Write a SELECT query that utilizes a JOIN with 3 or more tables
+-- Query to select "Printable" Surgery Scheduled
+SELECT p.[Name] AS 'Patient', s.[Name] AS 'Surgeon', pr.[Name] AS 'Procedure', h.[Name] AS 'Hospital', ss.SurgeryTime AS 'Surgery Start Time'
+FROM SurgerySchedule ss
+JOIN Patients p
+ON PatientID = p.ID
+JOIN Surgeons s
+ON SurgeonID = s.ID
+JOIN Procedures pr
+ON ss.ProcedureID = pr.ID
+JOIN Hospitals h
+ON ss.HospitalID = h.ID
+ORDER BY SurgeryTime, SurgeonID
+
+-- Write a  SELECT query that utilizes a LEFT JOIN
+-- DONE ON LINES 500-509
+
+-- Write a  SELECT query that utilizes a variable in the WHERE clause
+
+-- Write a  SELECT query that utilizes a ORDER BY clause
+
+-- Write a  SELECT query that utilizes a GROUP BY clause along with an aggregate function
 -- Query shows total count of procedures scheduled to be performed.
 SELECT p.[Name] as 'Procedure', Count(ss.ProcedureID) as 'Procedure Total'
 FROM SurgerySchedule ss
@@ -788,7 +828,10 @@ ON ss.ProcedureID = p.ID
 GROUP BY p.[Name]
 ORDER BY Count(ProcedureID) DESC
 
--- REQ: SELECT query that utilizes a SUBQUERY
+-- Write a SELECT query that utilizes a CALCULATED FIELD
+-- DONE ON LINES 553-559
+
+-- Write a SELECT query that utilizes a SUBQUERY
 -- Query to show which Surgeon has the most cases.
 SELECT [Name]
 FROM Surgeons
@@ -799,29 +842,8 @@ WHERE SurgeonID = (
   ORDER BY Count(SurgeonID) DESC
 )
 
--- REQ: SELECT query that uses JOIN with 3 tables, 2 OPERATORS (uses 'AND', 'OR'
--- AND 'LIKE'), a GROUP BY clause with aggregate functions, and a HAVING clause.
-
--- Average Age of Male Patients being operated on due to complex Fractures at
--- U of L and Norton Audubon Hospitals
-
-SELECT pr.[Name], Avg(p.Age) AS 'Average Age', Count(pr.[Name]) AS 'Total Surgeries'
-FROM SurgerySchedule ss
-JOIN Patients p
-ON ss.PatientID = p.ID
-JOIN Procedures pr
-ON ss.ProcedureID = pr.ID
-WHERE ((ss.HospitalID = 2) OR (ss.HospitalID = 4)) AND p.Gender = 'M'
-GROUP BY pr.[Name]
-HAVING pr.[Name] LIKE '%FIXATION%'
-ORDER BY 'Total Surgeries'
-
-
-
--- Patients Philipa Tiebe and Talbot Willcott decided to use another practice.
--- They were not scheduled, but need to be removed from the patient list and the
--- ToBeScheduled table.
-
+-- Write a DML statement that DELETEs rows from a table that another table references. This script will have to also DELETE any records that reference these rows. Both of the DELETE statements need to be wrapped in a single TRANSACTION.
+-- This delete statement simulates two patients leaving the practice, thus needing to be removed from the Patients roster; however, the ID field is referenced by PatientID in ToBeScheduled, so they must be removed from there first.
 DECLARE @Pat1 int = (
   SELECT ID
   FROM patients
@@ -833,10 +855,6 @@ DECLARE @Pat2 int = (
   WHERE [Name] = 'Talbot Willcott'
 )
 
--- REQ: DML statement that DELETEs from a table that another table references.
--- This script will have to also DELETE any records that reference these rows.
--- Both of the DELETE statements need to be wrapped in a single TRANSACTION.
-
 BEGIN TRANSACTION
 
 DELETE FROM ToBeScheduled
@@ -847,8 +865,23 @@ WHERE ID = @Pat1 OR ID = @Pat2
 
 COMMIT
 
-
 -- Write a SELECT query that utilizes a JOIN, at least 2 OPERATORS (AND, OR, =, IN, BETWEEN, ETC) AND A GROUP BY clause with an aggregate function
+
+-- Write a SELECT query that utilizes a JOIN with 3 or more tables, at 2 OPERATORS (AND, OR, =, IN, BETWEEN, ETC), a GROUP BY clause with an aggregate function, and a HAVING clause
+-- Average Age of Male Patients being operated on due to complex Fractures at U of L and Norton Audubon Hospitals
+SELECT pr.[Name], Avg(p.Age) AS 'Average Age', Count(pr.[Name]) AS 'Total Surgeries'
+FROM SurgerySchedule ss
+JOIN Patients p
+ON ss.PatientID = p.ID
+JOIN Procedures pr
+ON ss.ProcedureID = pr.ID
+WHERE ((ss.HospitalID = 2) OR (ss.HospitalID = 4)) AND p.Gender = 'M'
+GROUP BY pr.[Name]
+HAVING pr.[Name] LIKE '%FIXATION%'
+ORDER BY 'Total Surgeries'
+
 -- Design a NONCLUSTERED INDEX with ONE KEY COLUMN that improves the performance of one of the above queries
+
 -- Design a NONCLUSTERED INDEX with TWO KEY COLUMNS that improves the performance of one of the above queries
+
 -- Design a NONCLUSTERED INDEX with AT LEAST ONE KEY COLUMN and AT LEAST ONE INCLUDED COLUMN that improves the performance of one of the above queries
