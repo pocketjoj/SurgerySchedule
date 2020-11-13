@@ -758,10 +758,11 @@ END
 
 
 -- Write a SELECT query that uses a WHERE clause
--- Return patients with local phone number.
 SELECT [Name]
 FROM Patients
-WHERE PhoneNumber LIKE '502%'
+WHERE PhoneNumber = '502-754-2627'
+OR PhoneNumber = '502-510-3997'
+OR PhoneNumber = '864-225-3967'
 
 -- Write a  SELECT query that uses an OR and an AND operator
 SELECT p.[Name] as "Patients Needing Additional Attention", SurgeryTime
@@ -816,8 +817,18 @@ ORDER BY SurgeryTime, SurgeonID
 -- DONE ON LINES 500-509
 
 -- Write a  SELECT query that utilizes a variable in the WHERE clause
+-- DONE ON LINES 672-676 (done in several places above, though)
 
 -- Write a  SELECT query that utilizes a ORDER BY clause
+-- List of all Louisville (per phone number) seniors having Spine Surgeries this week, ordered by procedure type.
+SELECT p.[Name] AS 'Patient', pr.[Name] AS 'Procedure', p.PhoneNumber AS 'Phone Number'
+FROM ToBeScheduled t
+JOIN Patients p
+ON t.PatientID = p.ID
+JOIN Procedures pr
+ON t.ProcedureID = pr.ID
+WHERE p.PhoneNumber LIKE '502%' AND pr.Specialty = 'Spine'
+ORDER BY pr.[Name]
 
 -- Write a  SELECT query that utilizes a GROUP BY clause along with an aggregate function
 -- Query shows total count of procedures scheduled to be performed.
@@ -866,6 +877,13 @@ WHERE ID = @Pat1 OR ID = @Pat2
 COMMIT
 
 -- Write a SELECT query that utilizes a JOIN, at least 2 OPERATORS (AND, OR, =, IN, BETWEEN, ETC) AND A GROUP BY clause with an aggregate function
+-- Lists total number of Ortho Surgeries (by surgeon) taking place at either U of L Hospital or Medical Center East.
+SELECT s.[Name], Count(s.[Name]) AS 'Surgeries Scheduled'
+FROM SurgerySchedule ss
+JOIN Surgeons s
+ON ss.SurgeonID = s.ID
+GROUP BY s.[Name]
+ORDER BY 'Surgeries Scheduled' DESC
 
 -- Write a SELECT query that utilizes a JOIN with 3 or more tables, at 2 OPERATORS (AND, OR, =, IN, BETWEEN, ETC), a GROUP BY clause with an aggregate function, and a HAVING clause
 -- Average Age of Male Patients being operated on due to complex Fractures at U of L and Norton Audubon Hospitals
@@ -881,6 +899,9 @@ HAVING pr.[Name] LIKE '%FIXATION%'
 ORDER BY 'Total Surgeries'
 
 -- Design a NONCLUSTERED INDEX with ONE KEY COLUMN that improves the performance of one of the above queries
+-- Improves query on
+CREATE NONCLUSTERED INDEX PatPhone
+ON Patients(PhoneNumber);
 
 -- Design a NONCLUSTERED INDEX with TWO KEY COLUMNS that improves the performance of one of the above queries
 
