@@ -792,12 +792,16 @@ DELETE FROM ToBeScheduled
 WHERE PatientID = @Descheduled
 
 -- Write a  SELECT query that utilizes a JOIN
--- Would produce a phone number for all patients able to be scheduled this week.
-SELECT DISTINCT p.[Name], p.PhoneNumber
+-- Would produce a phone number and patient name for patients with the first 75 to be scheduled for an Open Reduction Internal Fixation.
+SELECT p.[Name], p.PhoneNumber, pr.[Name] AS 'Procedure'
 FROM Patients p
 JOIN ToBeScheduled t
 ON t.PatientID = p.ID
-WHERE t.Scheduled = 'Y'
+JOIN Procedures pr
+ON t.ProcedureID = pr.ID
+WHERE t.PatientID BETWEEN 1 AND 75
+AND t.ProcedureID >= 20
+ORDER BY p.[Name]
 
 -- Write a SELECT query that utilizes a JOIN with 3 or more tables
 -- Query to select "Printable" Surgery Scheduled
@@ -899,10 +903,13 @@ HAVING pr.[Name] LIKE '%FIXATION%'
 ORDER BY 'Total Surgeries'
 
 -- Design a NONCLUSTERED INDEX with ONE KEY COLUMN that improves the performance of one of the above queries
--- Improves query on
+-- THEORETICALLY IMPROVES QUERIES ON LINES 761-765 AND 828-835 (ALTHOUGH DOES NOT SHOW IN EXECUTION PLAN).
 CREATE NONCLUSTERED INDEX PatPhone
 ON Patients(PhoneNumber);
 
 -- Design a NONCLUSTERED INDEX with TWO KEY COLUMNS that improves the performance of one of the above queries
+-- IMPROVES QUERY FOUND ON LINES 796-804, AND BOTH ARE FOREIGN KEY FIELDS.
+CREATE NONCLUSTERED INDEX PatientProcedure
+ON ToBeScheduled(PatientID, ProcedureID)
 
 -- Design a NONCLUSTERED INDEX with AT LEAST ONE KEY COLUMN and AT LEAST ONE INCLUDED COLUMN that improves the performance of one of the above queries
