@@ -477,21 +477,21 @@ BEGIN
   WHERE Scheduled = 'N'
   Group BY PatientID
   ORDER BY Count(PatientID) DESC, PatientID
-)
+);
   DECLARE @Proc as int = (
     SELECT TOP 1 ProcedureID
     FROM ToBeScheduled
     WHERE Scheduled = 'N' AND PatientID = @Pat
-  )
-  DECLARE @Surgeon as int
-  DECLARE @Hospital as int
-  DECLARE @SurgeryTime as DateTime
+  );
+  DECLARE @Surgeon as int;
+  DECLARE @Hospital as int;
+  DECLARE @SurgeryTime as DateTime;
 
   IF EXISTS (SELECT PatientID FROM SurgerySchedule WHERE PatientID = @Pat)
   BEGIN
 	UPDATE ToBeScheduled
 	SET scheduled = 'P'
-	WHERE PatientID = @Pat AND ProcedureID = @Proc
+	WHERE PatientID = @Pat AND ProcedureID = @Proc;
   END
 
   ELSE
@@ -506,17 +506,17 @@ BEGIN
 	LEFT JOIN SurgerySchedule ssc
 	ON ss.StartTime = ssc.SurgeryTime AND s.ID = ssc.SurgeonID
 	WHERE p.ID = @Proc AND ssc.SurgeonID is null
-	ORDER BY StartTime, s.ID
+	ORDER BY StartTime, s.ID;
 
   BEGIN TRANSACTION
 	INSERT INTO SurgerySchedule (PatientID, SurgeonID, ProcedureID, HospitalID, SurgeryTime)
 	VALUES
-	(@Pat, @Surgeon, @Proc, @Hospital, @SurgeryTime)
+	(@Pat, @Surgeon, @Proc, @Hospital, @SurgeryTime);
 
 -- REQ: DML Statement UPDATES rows with a WHERE clause; the WHERE clause values are variables.
 	UPDATE ToBeScheduled
 	SET scheduled = 'Y', SurgeryID = (SELECT ID FROM SurgerySchedule WHERE PatientID = @Pat AND ProcedureID = @Proc)
-	WHERE PatientID = @Pat AND ProcedureID = @Proc
+	WHERE PatientID = @Pat AND ProcedureID = @Proc;
   COMMIT
   END
 END
@@ -528,13 +528,13 @@ SET Scheduled = 'P'
 From ToBeScheduled t
 Join SurgerySchedule ss
 ON t.PatientID = ss.PatientID
-WHERE t.SurgeryID IS NULL AND t.Scheduled = 'N'
+WHERE t.SurgeryID IS NULL AND t.Scheduled = 'N';
 
 -- Adding ToFollow column to help track if more surgeries can be scheduled after
 -- first cases.
 
 ALTER TABLE SurgerySchedule
-ADD ToFollow varchar(1) NOT NULL DEFAULT 'N'
+ADD ToFollow varchar(1) NOT NULL DEFAULT 'N';
 GO
 
 -- This Stored Procedure will calculate all possible To-Follow times for
@@ -544,7 +544,7 @@ GO
 
 CREATE PROCEDURE CalcToFollow
 AS
-DECLARE @Count as int = 0
+DECLARE @Count as int = 0;
 
 WHILE (@Count < 1)
 BEGIN
@@ -556,18 +556,18 @@ BEGIN
 	ON ss.ProcedureID = p.ID
 	JOIN SurgeonSchedule ssc
 	ON ss.SurgeonID = ssc.SurgeonID AND DatePart(day, ss.SurgeryTime) = DatePart(day, ssc.StartTime)
-	WHERE ssc.LastProcedureBy > (ss.SurgeryTime + CAST(p.ProcTime AS DateTime)) AND ss.ToFollow = 'N'
+	WHERE ssc.LastProcedureBy > (ss.SurgeryTime + CAST(p.ProcTime AS DateTime)) AND ss.ToFollow = 'N';
 
 	IF @SurgeryID IS NULL
 	BEGIN
-	SET @Count = 1
+	SET @Count = 1;
 	END
 
 	ELSE
 	BEGIN
 	UPDATE SurgerySchedule
 	SET ToFollow = 'Y'
-	WHERE ID = @SurgeryID
+	WHERE ID = @SurgeryID;
 	END
 END
 GO
@@ -592,7 +592,7 @@ JOIN SurgeonSchedule sus
 ON ss.SurgeonID = sus.SurgeonID AND ss.SurgeryTime = sus.StartTime
 JOIN Procedures pr
 ON ss.ProcedureID = pr.ID
-WHERE tb.Scheduled = 'P' AND p.Specialty = s.Specialty AND ToFollow = 'Y'
+WHERE tb.Scheduled = 'P' AND p.Specialty = s.Specialty AND ToFollow = 'Y';
 
 GO
 
@@ -603,7 +603,7 @@ SET SurgeryID = ss.ID, Scheduled = 'Y'
 FROM ToBeScheduled tb
 JOIN SurgerySchedule ss
 ON tb.PatientID = ss.PatientID AND tb.ProcedureID = ss.ProcedureID
-WHERE tb.Scheduled = 'P'
+WHERE tb.Scheduled = 'P';
 
 GO
 
@@ -611,7 +611,7 @@ GO
 -- to 'S' (scheduled) for any surgeries that have a case already scheduled after
 -- their start time (to avoid duplicates).
 
-DECLARE @List TABLE (SurgeryID int)
+DECLARE @List TABLE (SurgeryID int);
 
 INSERT INTO @List
 SELECT ss2.ID
@@ -619,13 +619,13 @@ FROM SurgerySchedule ss
 Join SurgerySchedule ss2
 ON ss.SurgeonID = ss2.SurgeonID
 AND DatePart(Day, ss.SurgeryTime) = DatePart(Day, ss2.SurgeryTime)
-AND DatePart(Hour, ss.SurgeryTime) > DatePart(Hour, ss2.SurgeryTime)
+AND DatePart(Hour, ss.SurgeryTime) > DatePart(Hour, ss2.SurgeryTime);
 
 UPDATE SurgerySchedule
 SET ToFollow = 'S'
 FROM SurgerySchedule ss
 Join @List l
-ON ss.ID = l.SurgeryID
+ON ss.ID = l.SurgeryID;
 
 GO
 
@@ -637,21 +637,21 @@ WHILE (SELECT COUNT(*) FROM SurgerySchedule WHERE ToFollow = 'Y') > 0
 AND (SELECT COUNT(*) FROM ToBeScheduled WHERE Scheduled = 'N') > 0
 
 BEGIN
-  DECLARE @Proc as int
-  DECLARE @Pat as int
-  DECLARE @Surgeon as int
-  DECLARE @Hospital as int
-  DECLARE @SurgeryTime as DateTime
-  DECLARE @SurgeryID as int
-  DECLARE @SurgeryLength as DateTime
-  DECLARE @Surgery2Length as DateTime
+  DECLARE @Proc as int;
+  DECLARE @Pat as int;
+  DECLARE @Surgeon as int;
+  DECLARE @Hospital as int;
+  DECLARE @SurgeryTime as DateTime;
+  DECLARE @SurgeryID as int;
+  DECLARE @SurgeryLength as DateTime;
+  DECLARE @Surgery2Length as DateTime;
 
   SELECT TOP 1 @Surgeon = ss.SurgeonID, @Hospital = ss.HospitalID, @SurgeryTime = ss.SurgeryTime, @SurgeryID = ss.ID, @SurgeryLength = p.ProcTime
   FROM SurgerySchedule ss
   JOIN Procedures p
   ON ss.ProcedureID = p.ID
   WHERE ToFollow = 'Y'
-  ORDER BY SurgeryTime
+  ORDER BY SurgeryTime;
 
   SELECT TOP 1 @Proc = t.ProcedureID, @Pat = t.PatientID, @Surgery2Length = p.ProcTime
   FROM ToBeScheduled t
@@ -660,7 +660,7 @@ BEGIN
   JOIN Surgeons s
   ON p.Specialty = s.Specialty
   WHERE s.ID = @Surgeon AND t.Scheduled = 'N'
-  ORDER BY PatientID
+  ORDER BY PatientID;
 
 -- Below logic detects duplicates and tries to schedule them where available.
 -- With this data set, no duplicates are scheduled for To-Follows
@@ -673,18 +673,18 @@ BEGIN
       FROM SurgerySchedule ss
       JOIN Procedures pr
       ON ss.ProcedureID = pr.ID
-      WHERE ss.PatientID = @Pat
+      WHERE ss.PatientID = @Pat;
 
       INSERT INTO SurgerySchedule (PatientID, SurgeonID, ProcedureID, HospitalID, SurgeryTime)
-      VALUES (@Pat, @Surgeon, @Proc, @Hospital, @SurgeryTime + @SurgeryLength)
+      VALUES (@Pat, @Surgeon, @Proc, @Hospital, @SurgeryTime + @SurgeryLength);
 
       UPDATE SurgerySchedule
       SET ToFollow = 'S'
-      WHERE ID = @SurgeryID
+      WHERE ID = @SurgeryID;
 
       UPDATE ToBeScheduled
       Set Scheduled = 'Y', SurgeryID = (SELECT TOP 1 ID FROM SurgerySchedule ORDER BY ID DESC)
-      WHERE ProcedureID = @Proc AND PatientID = @Pat
+      WHERE ProcedureID = @Proc AND PatientID = @Pat;
 
       IF @SurgeryTime + @SurgeryLength + @Surgery2Length <
       (SELECT LastProcedureBy FROM SurgeonSchedule WHERE SurgeonID = @Surgeon
@@ -692,7 +692,7 @@ BEGIN
       BEGIN
   	   UPDATE SurgerySchedule
   	   SET ToFollow = 'Y'
-  	   WHERE ID = (SELECT Count(*) FROM SurgerySchedule)
+  	   WHERE ID = (SELECT Count(*) FROM SurgerySchedule);
       END
     END
 
@@ -700,7 +700,7 @@ BEGIN
     BEGIN
       UPDATE ToBeScheduled
       Set Scheduled = 'P'
-      WHERE PatientID = @Pat and ProcedureID = @Proc
+      WHERE PatientID = @Pat and ProcedureID = @Proc;
     END
   END
 
@@ -708,15 +708,15 @@ BEGIN
   BEGIN
 
     INSERT INTO SurgerySchedule (PatientID, SurgeonID, ProcedureID, HospitalID, SurgeryTime)
-    VALUES (@Pat, @Surgeon, @Proc, @Hospital, @SurgeryTime + @SurgeryLength)
+    VALUES (@Pat, @Surgeon, @Proc, @Hospital, @SurgeryTime + @SurgeryLength);
 
     UPDATE SurgerySchedule
     SET ToFollow = 'S'
-    WHERE ID = @SurgeryID
+    WHERE ID = @SurgeryID;
 
     UPDATE ToBeScheduled
     Set Scheduled = 'Y', SurgeryID = (SELECT TOP 1 ID FROM SurgerySchedule ORDER BY ID DESC)
-    WHERE ProcedureID = @Proc AND PatientID = @Pat
+    WHERE ProcedureID = @Proc AND PatientID = @Pat;
 
     IF @SurgeryTime + @SurgeryLength + @Surgery2Length <
     (SELECT LastProcedureBy FROM SurgeonSchedule WHERE SurgeonID = @Surgeon
@@ -724,7 +724,7 @@ BEGIN
     BEGIN
 	   UPDATE SurgerySchedule
 	   SET ToFollow = 'Y'
-	   WHERE ID = (SELECT Count(*) FROM SurgerySchedule)
+	   WHERE ID = (SELECT Count(*) FROM SurgerySchedule);
     END
   END
 
@@ -746,32 +746,50 @@ BEGIN
 
   DELETE TOP (1)
   FROM ToBeScheduled
-  WHERE ProcedureID = @Procedure AND PatientID = @Patient
+  WHERE ProcedureID = @Procedure AND PatientID = @Patient;
 
   IF @Procedure IS null
   BEGIN
-    SET @counter = 0
+    SET @counter = 0;
   END
-END
+END;
 
--- All available days should be scheduled by above, filling out the SurgerySchedule table. Requirements are listed below.
+-- All available days should be scheduled by above, filling out the SurgerySchedule table.
+-- Requirements are listed below, starting with indexes (since they improve performance of the queries that follow).
 
+-- Design a NONCLUSTERED INDEX with ONE KEY COLUMN that improves the performance of one of the above queries
+-- IMPROVES QUERY FOUND ON LINES 784-792
+CREATE NONCLUSTERED INDEX ix_SurgeryTime
+ON SurgerySchedule(SurgeryTime);
+
+-- Design a NONCLUSTERED INDEX with TWO KEY COLUMNS that improves the performance of one of the above queries
+-- IMPROVES QUERY FOUND ON LINES 814-822 AND 846-853; ALSO IMPROVES SPEEDS OF UPDATE STATEMENTS FOR TOBESCHEDULED (LINES 492-494, 517-519, ETC.)
+CREATE NONCLUSTERED INDEX ix_PatientProcedure
+ON ToBeScheduled(PatientID, ProcedureID);
+
+-- Design a NONCLUSTERED INDEX with AT LEAST ONE KEY COLUMN and AT LEAST ONE INCLUDED COLUMN that improves the performance of one of the above queries
+-- IMPROVES QUERY FOUND ON LINES 846-853, AS WELL AS A COUPLE OTHERS (QUERIES ON LINES 777-781, 807-810, AND 846-853 ALSO USE IT)
+CREATE NONCLUSTERED INDEX ix_PatientByPhoneAndAge
+ON Patients(PhoneNumber, Age)
+INCLUDE([Name]);
 
 -- Write a SELECT query that uses a WHERE clause
 SELECT [Name]
 FROM Patients
 WHERE PhoneNumber = '502-754-2627'
 OR PhoneNumber = '502-510-3997'
-OR PhoneNumber = '864-225-3967'
+OR PhoneNumber = '864-225-3967';
 
 -- Write a  SELECT query that uses an OR and an AND operator
-SELECT p.[Name] as "Patients Needing Additional Attention", SurgeryTime
+SELECT s.[Name] AS 'Surgeon', pr.[Name] AS 'Procedure', SurgeryTime
 FROM SurgerySchedule ss
-JOIN Patients p
-ON ss.PatientID = p.ID
+JOIN Surgeons s
+ON ss.SurgeonID = s.ID
 JOIN Procedures pr
 ON ss.ProcedureID = pr.ID
-WHERE (pr.Implants = 'Y' AND pr.ProcTime > '04:00:00') OR p.Age > 70
+WHERE (ProcedureID BETWEEN 1 AND 3 OR ProcedureID = 10)
+AND DATEPART(hour, SurgeryTime) < 12
+ORDER BY SurgeryTime;
 
 -- Write a  SELECT query that filters NULL rows using IS NOT NULL
 SELECT p.[Name] AS 'Scheduled'
@@ -779,17 +797,17 @@ FROM ToBeScheduled t
 JOIN Patients p
 ON t.PatientID = p.ID
 WHERE SurgeryID is not null
-ORDER BY p.[Name]
+ORDER BY p.[Name];
 
 -- Write a DML statement that UPDATEs a set of rows with a WHERE clause. The values used in the WHERE clause should be a variable
 -- DONE ON LINES 517-519.
 
 -- Write a DML statement that DELETEs a set of rows with a WHERE clause. The values used in the WHERE clause should be a variable
 -- Removing patient from the ToBeScheduled category by phone number.
-DECLARE @Descheduled int = (SELECT ID FROM Patients WHERE PhoneNumber = '848-519-9086')
+DECLARE @Descheduled int = (SELECT ID FROM Patients WHERE PhoneNumber = '502-519-9086')
 
 DELETE FROM ToBeScheduled
-WHERE PatientID = @Descheduled
+WHERE PatientID = @Descheduled;
 
 -- Write a  SELECT query that utilizes a JOIN
 -- Would produce a phone number and patient name for patients with the first 75 to be scheduled for an Open Reduction Internal Fixation.
@@ -801,7 +819,7 @@ JOIN Procedures pr
 ON t.ProcedureID = pr.ID
 WHERE t.PatientID BETWEEN 1 AND 75
 AND t.ProcedureID >= 20
-ORDER BY p.[Name]
+ORDER BY p.[Name];
 
 -- Write a SELECT query that utilizes a JOIN with 3 or more tables
 -- Query to select "Printable" Surgery Scheduled
@@ -815,7 +833,7 @@ JOIN Procedures pr
 ON ss.ProcedureID = pr.ID
 JOIN Hospitals h
 ON ss.HospitalID = h.ID
-ORDER BY SurgeryTime, SurgeonID
+ORDER BY SurgeryTime, SurgeonID;
 
 -- Write a  SELECT query that utilizes a LEFT JOIN
 -- DONE ON LINES 500-509
@@ -831,8 +849,8 @@ JOIN Patients p
 ON t.PatientID = p.ID
 JOIN Procedures pr
 ON t.ProcedureID = pr.ID
-WHERE p.PhoneNumber LIKE '502%' AND pr.Specialty = 'Spine'
-ORDER BY pr.[Name]
+WHERE p.PhoneNumber LIKE '502%' AND pr.Specialty = 'Spine' AND p.Age >= 60
+ORDER BY pr.[Name];
 
 -- Write a  SELECT query that utilizes a GROUP BY clause along with an aggregate function
 -- Query shows total count of procedures scheduled to be performed.
@@ -841,7 +859,7 @@ FROM SurgerySchedule ss
 JOIN Procedures p
 ON ss.ProcedureID = p.ID
 GROUP BY p.[Name]
-ORDER BY Count(ProcedureID) DESC
+ORDER BY Count(ProcedureID) DESC;
 
 -- Write a SELECT query that utilizes a CALCULATED FIELD
 -- DONE ON LINES 553-559
@@ -850,12 +868,12 @@ ORDER BY Count(ProcedureID) DESC
 -- Query to show which Surgeon has the most cases.
 SELECT [Name]
 FROM Surgeons
-WHERE SurgeonID = (
+WHERE ID = (
   SELECT TOP 1 SurgeonID
   FROM SurgerySchedule
   GROUP BY SurgeonID
   ORDER BY Count(SurgeonID) DESC
-)
+);
 
 -- Write a DML statement that DELETEs rows from a table that another table references. This script will have to also DELETE any records that reference these rows. Both of the DELETE statements need to be wrapped in a single TRANSACTION.
 -- This delete statement simulates two patients leaving the practice, thus needing to be removed from the Patients roster; however, the ID field is referenced by PatientID in ToBeScheduled, so they must be removed from there first.
@@ -878,7 +896,7 @@ WHERE PatientID = @Pat1 OR PatientID = @Pat2
 DELETE FROM Patients
 WHERE ID = @Pat1 OR ID = @Pat2
 
-COMMIT
+COMMIT;
 
 -- Write a SELECT query that utilizes a JOIN, at least 2 OPERATORS (AND, OR, =, IN, BETWEEN, ETC) AND A GROUP BY clause with an aggregate function
 -- Lists total number of Ortho Surgeries (by surgeon) taking place at either U of L Hospital or Medical Center East.
@@ -887,7 +905,7 @@ FROM SurgerySchedule ss
 JOIN Surgeons s
 ON ss.SurgeonID = s.ID
 GROUP BY s.[Name]
-ORDER BY 'Surgeries Scheduled' DESC
+ORDER BY 'Surgeries Scheduled' DESC;
 
 -- Write a SELECT query that utilizes a JOIN with 3 or more tables, at 2 OPERATORS (AND, OR, =, IN, BETWEEN, ETC), a GROUP BY clause with an aggregate function, and a HAVING clause
 -- Average Age of Male Patients being operated on due to complex Fractures at U of L and Norton Audubon Hospitals
@@ -900,16 +918,4 @@ ON ss.ProcedureID = pr.ID
 WHERE ((ss.HospitalID = 2) OR (ss.HospitalID = 4)) AND p.Gender = 'M'
 GROUP BY pr.[Name]
 HAVING pr.[Name] LIKE '%FIXATION%'
-ORDER BY 'Total Surgeries'
-
--- Design a NONCLUSTERED INDEX with ONE KEY COLUMN that improves the performance of one of the above queries
--- THEORETICALLY IMPROVES QUERIES ON LINES 761-765 AND 828-835 (ALTHOUGH DOES NOT SHOW IN EXECUTION PLAN).
-CREATE NONCLUSTERED INDEX PatPhone
-ON Patients(PhoneNumber);
-
--- Design a NONCLUSTERED INDEX with TWO KEY COLUMNS that improves the performance of one of the above queries
--- IMPROVES QUERY FOUND ON LINES 796-804, AND BOTH ARE FOREIGN KEY FIELDS.
-CREATE NONCLUSTERED INDEX PatientProcedure
-ON ToBeScheduled(PatientID, ProcedureID)
-
--- Design a NONCLUSTERED INDEX with AT LEAST ONE KEY COLUMN and AT LEAST ONE INCLUDED COLUMN that improves the performance of one of the above queries
+ORDER BY 'Total Surgeries';
