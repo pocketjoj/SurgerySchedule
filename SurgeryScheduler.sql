@@ -16,6 +16,21 @@ Use SurgerySchedule;
 
 -- REQ: DateTime, int and varchar data types used many times throughout tables.
 
+-- Scripts to delete tables, procedures and indices so table is re-runnable.
+DROP TABLE IF EXISTS [dbo].ToBeScheduled
+DROP TABLE IF EXISTS [dbo].SurgerySchedule
+DROP TABLE IF EXISTS [dbo].SurgeonSchedule
+DROP TABLE IF EXISTS [dbo].Patients
+DROP TABLE IF EXISTS [dbo].Surgeons
+DROP TABLE IF EXISTS [dbo].Hospitals
+DROP TABLE IF EXISTS [dbo].Procedures
+DROP PROC IF EXISTS CalcToFollow
+DROP INDEX IF EXISTS SurgerySchedule.ix_SurgeryTime
+DROP INDEX IF EXISTS ToBeScheduled.ix_PatientProcedure
+DROP INDEX IF EXISTS Patients.ix_PatientByPhoneAndAge
+
+GO
+
 CREATE TABLE Patients (
   ID int PRIMARY KEY,
   [Name] varchar(50),
@@ -70,9 +85,9 @@ CREATE TABLE ToBeScheduled (
 
 GO
 
--- INSERT scripts to populate data (through line 465)
+-- INSERT scripts to populate data (through line 480)
 
---Insert patient data from mockaroo (through line 220)
+--Insert patient data from mockaroo (through line 235)
 INSERT INTO Patients
 VALUES
 (1, 'Devin Lissimore', 46, '502-585-3296', 'M'),
@@ -264,7 +279,7 @@ VALUES
 (24, 'Femur/Tibial Open Reduction Internal Fixation', 'Ortho', '05:00:00', 'Y');
 
 -- 212 Surgeries to be scheduled (pulling random patient/procedure ID combos
--- from Mockaroo); ends at line 431.
+-- from Mockaroo); ends at line 446.
 
 INSERT INTO ToBeScheduled (PatientID, ProcedureID, Scheduled)
 VALUES
@@ -758,17 +773,17 @@ END;
 -- Requirements are listed below, starting with indexes (since they improve performance of the queries that follow).
 
 -- Design a NONCLUSTERED INDEX with ONE KEY COLUMN that improves the performance of one of the above queries
--- IMPROVES QUERY FOUND ON LINES 784-792
+-- IMPROVES QUERY FOUND ON LINES 799-807
 CREATE NONCLUSTERED INDEX ix_SurgeryTime
 ON SurgerySchedule(SurgeryTime);
 
 -- Design a NONCLUSTERED INDEX with TWO KEY COLUMNS that improves the performance of one of the above queries
--- IMPROVES QUERY FOUND ON LINES 814-822 AND 846-853; ALSO IMPROVES SPEEDS OF UPDATE STATEMENTS FOR TOBESCHEDULED (LINES 492-494, 517-519, ETC.)
+-- IMPROVES QUERY FOUND ON LINES 829-837 AND 861-868; ALSO IMPROVES SPEEDS OF UPDATE STATEMENTS FOR TOBESCHEDULED (LINES 507-509, 532-534, ETC.)
 CREATE NONCLUSTERED INDEX ix_PatientProcedure
 ON ToBeScheduled(PatientID, ProcedureID);
 
 -- Design a NONCLUSTERED INDEX with AT LEAST ONE KEY COLUMN and AT LEAST ONE INCLUDED COLUMN that improves the performance of one of the above queries
--- IMPROVES QUERY FOUND ON LINES 846-853, AS WELL AS A COUPLE OTHERS (QUERIES ON LINES 777-781, 807-810, AND 846-853 ALSO USE IT)
+-- IMPROVES QUERY FOUND ON LINES 861-868, AS WELL AS A COUPLE OTHERS (QUERIES ON LINES 792-796, 822-825, AND 861-868 ALSO USE IT)
 CREATE NONCLUSTERED INDEX ix_PatientByPhoneAndAge
 ON Patients(PhoneNumber, Age)
 INCLUDE([Name]);
@@ -800,7 +815,7 @@ WHERE SurgeryID is not null
 ORDER BY p.[Name];
 
 -- Write a DML statement that UPDATEs a set of rows with a WHERE clause. The values used in the WHERE clause should be a variable
--- DONE ON LINES 517-519.
+-- DONE ON LINES 532-534.
 
 -- Write a DML statement that DELETEs a set of rows with a WHERE clause. The values used in the WHERE clause should be a variable
 -- Removing patient from the ToBeScheduled category by phone number.
@@ -836,10 +851,10 @@ ON ss.HospitalID = h.ID
 ORDER BY SurgeryTime, SurgeonID;
 
 -- Write a  SELECT query that utilizes a LEFT JOIN
--- DONE ON LINES 500-509
+-- DONE ON LINES 515-524
 
 -- Write a  SELECT query that utilizes a variable in the WHERE clause
--- DONE ON LINES 672-676 (done in several places above, though)
+-- DONE ON LINES 687-691 (done in several places above, though)
 
 -- Write a  SELECT query that utilizes a ORDER BY clause
 -- List of all Louisville (per phone number) seniors having Spine Surgeries this week, ordered by procedure type.
@@ -862,7 +877,7 @@ GROUP BY p.[Name]
 ORDER BY Count(ProcedureID) DESC;
 
 -- Write a SELECT query that utilizes a CALCULATED FIELD
--- DONE ON LINES 553-559
+-- DONE ON LINES 568-574
 
 -- Write a SELECT query that utilizes a SUBQUERY
 -- Query to show which Surgeon has the most cases.
