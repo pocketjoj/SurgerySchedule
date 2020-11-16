@@ -1,6 +1,6 @@
 -- This database will simulate a surgery schedule for a one week period in which up to 161 surgeries are to be scheduled.
 -- Some of the requirements are done within the "auto-scheduler", and those line numbers are noted in the requirements comments at the end.
--- Requirement comments start on line 760.
+-- Requirement comments start on line 775.
 
 CREATE DATABASE SurgerySchedule;
 GO
