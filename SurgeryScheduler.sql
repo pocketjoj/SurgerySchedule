@@ -877,9 +877,9 @@ GROUP BY p.[Name]
 ORDER BY Count(ProcedureID) DESC;
 
 -- Write a SELECT query that utilizes a CALCULATED FIELD
-SELECT s.[Name](ss.LastProcedureBy - ss.StartTime) AS 'Total Scheduled Hours'
+SELECT s.[Name], (ss.LastProcedureBy - ss.StartTime) AS 'Total Scheduled Hours'
 FROM SurgeonSchedule ss
-JOIN Surgeon s
+JOIN Surgeons s
 ON ss.SurgeonID = s.ID
 
 -- Write a SELECT query that utilizes a SUBQUERY
