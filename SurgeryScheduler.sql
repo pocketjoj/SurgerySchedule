@@ -877,7 +877,10 @@ GROUP BY p.[Name]
 ORDER BY Count(ProcedureID) DESC;
 
 -- Write a SELECT query that utilizes a CALCULATED FIELD
--- DONE ON LINES 568-574
+SELECT s.[Name](ss.LastProcedureBy - ss.StartTime) AS 'Total Scheduled Hours'
+FROM SurgeonSchedule ss
+JOIN Surgeon s
+ON ss.SurgeonID = s.ID
 
 -- Write a SELECT query that utilizes a SUBQUERY
 -- Query to show which Surgeon has the most cases.
@@ -919,6 +922,7 @@ SELECT s.[Name], Count(s.[Name]) AS 'Surgeries Scheduled'
 FROM SurgerySchedule ss
 JOIN Surgeons s
 ON ss.SurgeonID = s.ID
+WHERE s.Specialty = 'Ortho' AND (ss.HospitalID BETWEEN 2 AND 3)
 GROUP BY s.[Name]
 ORDER BY 'Surgeries Scheduled' DESC;
 
